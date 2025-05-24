@@ -18,8 +18,10 @@
     mapboxgl.accessToken = 'pk.eyJ1IjoidmVsbG9kcml2ZXIiLCJhIjoiY21iMGc2azhiMHcyNDJrcTJrN3F3dnp1bSJ9.A6iU7GA4IixnaTbhJPe9hQ'; // <<< Substitua pelo seu token
 
     // Coordenadas da origem e destino
-    const origem = [-43.2096, -22.9035]; // Ex: Rio de Janeiro
-    const destino = [-46.6333, -23.5505]; // Ex: São Paulo
+    const params = new URLSearchParams(window.location.search);
+    const origem = params.get("origem")?.split(',').map(Number) || [-43.2096, -22.9035];
+    const destino = params.get("destino")?.split(',').map(Number) || [-46.6333, -23.5505];
+
 
     const map = new mapboxgl.Map({
       container: 'map',
