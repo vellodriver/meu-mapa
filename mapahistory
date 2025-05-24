@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Rota Mapbox</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+  </style>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoidmVsbG9kcml2ZXIiLCJhIjoiY21iMGc2azhiMHcyNDJrcTJrN3F3dnp1bSJ9.A6iU7GA4IixnaTbhJPe9hQ';
+
+    const params = new URLSearchParams(window.location.search);
+    const origem = params.get("origem")?.split(',').map(Number) || [-43.2096, -22.9035];
+    const destino = params.get("destino")?.split(',').map(Number) || [-46.6333, -23.5505];
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: origem,
+      zoom: 5
+    });
+
+    map.on('load', () => {
+      // Marcadores
+      new mapboxgl.Marker({ color: 'green' }).setLngLat(origem).addTo(map);
+      new mapboxgl.Marker({ color: 'red' }).setLngLat(destino).addTo(map);
+
+      // Ajuste do zoom e centro com fitBounds
+      const bounds = new mapboxgl.LngLatBounds();
+      bounds.extend(origem);
+      bounds.extend(destino);
+      map.fitBounds(bounds, { padding: 50 });
+
+      // Adiciona rota
+      getRoute();
+    });
+
+    async function getRoute() {
+      const query = await fetch(
+        `https://api.mapbox.com/directions/v5/mapbox/driving/${origem.join(',')};${destino.join(',')}?geometries=geojson&access_token=${mapboxgl.accessToken}`
+      );
+      const json = await query.json();
+      const data = json.routes[0].geometry;
+
+      map.addSource('route', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          properties: {},
+          geometry: data
+        }
+      });
+
+      map.addLayer({
+        id: 'route',
+        type: 'line',
+        source: 'route',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: {
+          'line-color': '#1db7dd',
+          'line-width': 5
+        }
+      });
+    }
+  </script>
+</body>
+</html>
