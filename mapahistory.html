@@ -2,11 +2,11 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Rota Mapbox</title>
+  <title>Rota Mapbox Card</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body { margin: 0; padding: 0; }
-    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    #map { width: 100%; height: 100px; border-radius: 10px; }
   </style>
   <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
@@ -24,8 +24,7 @@
     const map = new mapboxgl.Map({
       container: 'map',
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: origem,
-      zoom: 5
+      interactive: false // evita zoom no toque
     });
 
     map.on('load', () => {
@@ -33,11 +32,19 @@
       new mapboxgl.Marker({ color: 'green' }).setLngLat(origem).addTo(map);
       new mapboxgl.Marker({ color: 'red' }).setLngLat(destino).addTo(map);
 
-      // Ajuste do zoom e centro com fitBounds
+      // FitBounds com padding lateral maior (mapa horizontal)
       const bounds = new mapboxgl.LngLatBounds();
       bounds.extend(origem);
       bounds.extend(destino);
-      map.fitBounds(bounds, { padding: 50 });
+      map.fitBounds(bounds, {
+        padding: {
+          top: 20,
+          bottom: 20,
+          left: 60,
+          right: 60
+        },
+        maxZoom: 14 // evita zoom excessivo
+      });
 
       // Adiciona rota
       getRoute();
@@ -66,7 +73,7 @@
         layout: { 'line-join': 'round', 'line-cap': 'round' },
         paint: {
           'line-color': '#1db7dd',
-          'line-width': 5
+          'line-width': 4
         }
       });
     }
