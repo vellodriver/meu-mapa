@@ -43,8 +43,11 @@
           left: 60,
           right: 60
         },
-        maxZoom: 14 // evita zoom excessivo
+        maxZoom: 14
       });
+
+      // Rotacionar o mapa para melhorar a visualização horizontal
+      map.rotateTo(90, { duration: 0 });
 
       // Adiciona rota
       getRoute();
