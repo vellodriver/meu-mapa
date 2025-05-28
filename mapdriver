@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Localização em tempo real - Mapbox</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <style>
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoidmVsbG9kcml2ZXIiLCJhIjoiY21iMGc2azhiMHcyNDJrcTJrN3F3dnp1bSJ9.A6iU7GA4IixnaTbhJPe9hQ'; // 🔐 Insira sua chave Mapbox
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [-51.6108, -28.7835], // Posição inicial (exemplo: Nova Prata - RS)
+      zoom: 14
+    });
+
+    // Adiciona controle de localização no canto
+    const geolocate = new mapboxgl.GeolocateControl({
+      positionOptions: {
+        enableHighAccuracy: true
+      },
+      trackUserLocation: true,
+      showUserHeading: true
+    });
+
+    map.addControl(geolocate);
+
+    map.on('load', () => {
+      geolocate.trigger(); // Centraliza no usuário ao carregar
+    });
+  </script>
+</body>
+</html>
