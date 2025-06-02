@@ -33,14 +33,14 @@
       new mapboxgl.Marker({ color: 'green' }).setLngLat(origem).addTo(map);
       new mapboxgl.Marker({ color: 'red' }).setLngLat(destino).addTo(map);
 
-      // Ajuste do zoom e centro com fitBounds com padding inferior maior (card fixo)
+      // Ajuste do zoom e centro com fitBounds com padding inferior ajustado
       const bounds = new mapboxgl.LngLatBounds();
       bounds.extend(origem);
       bounds.extend(destino);
       map.fitBounds(bounds, {
         padding: {
           top: 80,
-          bottom: 280, // espaço extra para o card
+          bottom: 200, // Ajustado para não cortar o marcador
           left: 80,
           right: 80
         }
